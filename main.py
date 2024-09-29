@@ -52,15 +52,15 @@ try:
         print(f"Encontrado {len(lista_vagas)} vagas na Catho.")
         link_vagas = []
         for vaga in lista_vagas:
-            link_vagas.append(vaga.find_element(By.XPATH,".//div[contains(@class, 'sc-bpUBKd sTalA')]//a").get_property("href"))
+            link_vagas.append(vaga.find_element(By.XPATH,".//a").get_property("href"))
         for link in link_vagas:
-            # Abrindo o navegador
+            # Abrindo o navegadors
             driver.get(link)
 
             # Raspagem de informaçõesss
             nome_vaga = driver.find_element(By.XPATH,"//header[contains(@class, 'Header-module')]//h1").text
             empresa_vaga = driver.find_element(By.XPATH,".//div[contains(@class, 'info-item')]").text
-            descricao_vaga = driver.find_element(By.XPATH, ".//div[contains(@class, 'job-description')]").text
+            descricao_vaga = driver.find_element(By.XPATH, ".//div[contains(@class, 'job-description')]")
             salario_vaga = driver.find_element(By.XPATH,".//article[contains(@id, 'job')]//ul//li").text
             localizacao_vaga = driver.find_element(By.XPATH,".//div[contains(@class, 'cidades')]//button/a").text
 
@@ -107,11 +107,12 @@ try:
             time.sleep(5)
 
             # Raspagem de informações
-            nome_vaga = driver.find_element(By.XPATH, "//h1[contains(@class, 'sc-ccd5d36-6 gdqSpl')]").text
-            descricao_vaga = driver.find_element(By.CSS_SELECTOR, 'body > div > div > main > div > section > div > div > p').text
+            nome_vaga = driver.find_element(By.XPATH, "//*[@id='h1']").text
+            descricao_vaga = driver.find_element(By.XPATH, "//*[@id='main']/div/section[1]//div").text
             salario_vaga = '-'
-            localizacao_vaga = driver.find_element(By.XPATH, "//span[contains(@class, 'sc-dfd42894-0 bzQMFp')]").text
+            localizacao_vaga = driver.find_element(By.XPATH, "//*[@id='main']/div/div[1]/div/div[2]/div[4]/p[1]/span[2]").text
             
+
             nova_linha = pd.DataFrame([{
                 "nome": nome_vaga,
                 "empresa": empresa_vagas[i],
