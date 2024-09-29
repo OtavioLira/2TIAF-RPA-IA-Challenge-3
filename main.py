@@ -50,20 +50,24 @@ try:
     # Verificando se sencontrou vagass
     if lista_vagas:
         print(f"Encontrado {len(lista_vagas)} vagas na Catho.")
+        link_vagas = []
         for vaga in lista_vagas:
-            vaga = vaga.text.split("\n")
+            link_vagas.append(vaga.find_element(By.XPATH,".//div[contains(@class, 'sc-bpUBKd sTalA')]//a").get_property("href"))
+        for link in link_vagas:
+            # Abrindo o navegador
+            driver.get(link)
 
-            # Raspagem de informações
-            nome_vaga = vaga[0]
-            empresa_vaga = vaga[1]
-            descricao_vaga = vaga[2]
-            salario_vaga = vaga[3]
-            localizacao_vaga = vaga[4]
+            # Raspagem de informaçõesss
+            nome_vaga = driver.find_element(By.XPATH,"//header[contains(@class, 'Header-module')]//h1").text
+            empresa_vaga = driver.find_element(By.XPATH,".//div[contains(@class, 'info-item')]").text
+            descricao_vaga = driver.find_element(By.XPATH, ".//div[contains(@class, 'job-description')]").text
+            salario_vaga = driver.find_element(By.XPATH,".//article[contains(@id, 'job')]//ul//li").text
+            localizacao_vaga = driver.find_element(By.XPATH,".//div[contains(@class, 'cidades')]//button/a").text
 
             nova_linha = pd.DataFrame([{
                 "nome": nome_vaga,
                 "empresa": empresa_vaga,
-                "descricao": descricao_vaga,
+                "descricao": descricao_vaga, 
                 "salario": salario_vaga,
                 "vaga": localizacao_vaga
             }])
@@ -82,7 +86,7 @@ try:
         EC.presence_of_element_located((By.NAME, "searchTerm"))
     )
 
-    input_vaga.send_keys("Estágio")
+    input_vaga.send_keys("Programador Junior")
     input_vaga.submit()
 
     # Procurando lista de vsagas
