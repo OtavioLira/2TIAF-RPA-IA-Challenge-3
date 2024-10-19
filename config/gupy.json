@@ -1,0 +1,30 @@
+{
+    "nome": "gupy",
+    "url": "https://portal.gupy.io/",
+    "pesquisa_vaga": 
+    {
+        "xpath": "//input[@name='searchTerm']"
+    },
+    "lista_vagas": 
+    {
+        "xpath": "//ul[contains(@class,'sc-a01de6b')]/li",
+        "xpath_link": ".//a[contains(@class, 'sc-4d881605-1 IKqnq')]"
+    },
+    "elementos_vaga": {
+        "nome": {
+            "xpath": "//*[@id='h1']"
+        },
+        "empresa": {
+            "xpath": "//*[@id='social-links']/ul/li[1]/a | //*[@id='social-links']/ul/li[1]/a | //*[@id='h1']"
+        },
+        "descricao": {
+            "xpath": "//*[@id='main']/div/section[1]//div"
+        },
+        "salario": {
+            "xpath": ".//*[@id='copy-link-button-outlined']"
+        },
+        "localizacao": {
+            "xpath": "//*[@id='main']/div/div[1]/div/div[2]/div[4]/p[1]/span[2]"
+        }
+    }
+}

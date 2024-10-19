@@ -1,0 +1,30 @@
+{
+    "nome": "catho",
+    "url": "https://www.catho.com.br/",
+    "pesquisa_vaga": 
+    {
+        "xpath": "//input[@id='input-0']"
+    },
+    "lista_vagas": 
+    {
+        "xpath": "//ul[contains(@class, 'gtm-class search-result-custom_jobList')]/li",
+        "xpath_link": ".//a"
+    },
+    "elementos_vaga": {
+        "nome": {
+            "xpath": "//header[contains(@class, 'Header-module')]//h1"
+        },
+        "empresa": {
+            "xpath": "//div[contains(@class, 'sc-jnOGJG yAzzu')]/strong | //div[contains(@class,'info-item')]/div[1]/div[2]/strong | //*[@id='job-*']/div/div[3]/div/div[2]/div[1]/div[2]/strong"
+        },
+        "descricao": {
+            "xpath": ".//div[contains(@class, 'job-description')]"
+        },
+        "salario": {
+            "xpath": ".//article[contains(@id, 'job')]//ul//li"
+        },
+        "localizacao": {
+            "xpath": ".//div[contains(@class, 'cidades')]//button/a"
+        }
+    }
+}
