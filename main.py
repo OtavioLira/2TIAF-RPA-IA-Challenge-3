@@ -7,6 +7,77 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import google.generativeai as genai
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+genai.configure(api_key="")
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+
+def generate_report(df):
+    # Relatório de Estatísticas Descritivas
+    print("Relatório de Estatísticas Descritivas")
+    print(df.describe(include='all'))
+    
+    # Quantidade de vagas por empresa
+    vagas_por_empresa = df['empresa'].value_counts()
+    print("\nQuantidade de Vagas por Empresa:\n", vagas_por_empresa)
+    
+    # Faixa salarial
+    print("\nAnálise de Salários:")
+    print(df['salario'].describe())
+    
+    # Gráficos
+    plt.figure(figsize=(10, 6))
+    sns.countplot(y=df['empresa'], order=vagas_por_empresa.index)
+    plt.title("Quantidade de Vagas por Empresa")
+    plt.show()
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(df['salario'].dropna())
+    plt.title("Distribuição de Salários")
+    plt.show() 
+
+def generate_insights(df):
+    insights = ""
+
+    # Resumo do dataset
+    vagas_totais = df.shape[0]
+    insights += f"Total de vagas encontradas: {vagas_totais}\n"
+
+    # Empresa com mais vagas
+    empresa_top = df['empresa'].value_counts().idxmax()
+    vagas_empresa_top = df['empresa'].value_counts().max()
+    insights += f"A empresa com mais vagas é {empresa_top}, com {vagas_empresa_top} vagas.\n"
+
+    # Faixa salarial mais comum
+    salario_medio = df['salario'].mean()
+    insights += f"O salário médio das vagas é de R$ {salario_medio:.2f}.\n"
+
+    # Enviando os insights para a API Gemini para enriquecer as análises
+    response = model.generate_content(
+        f"Baseado nos seguintes insights:\n\n{insights}\n\nQuais conclusões adicionais podemos tirar deste cenário de vagas e salários?"
+    )
+
+    insights += f"Insights fornecidos pela IA Gemini:\n{response.text}\n"
+
+    print(insights)
+    return insights
+
+def clean_salary_column(df):
+    # Preenchendo valores NaN com string vazia para evitar erros
+    df['salario'] = df['salario'].fillna('').astype(str)
+
+    # Remover tudo que não é número, substituindo por 0
+    df['salario'] = df['salario'].str.replace(r'[^0-9]', '', regex=True)  # Mantém apenas dígitos
+    df['salario'] = df['salario'].replace('', '0')  # Substitui strings vazias por '0'
+
+    # Converte para float, substituindo valores não numéricos por 0
+    df['salario'] = pd.to_numeric(df['salario'], errors='coerce').fillna(0)
+
+    return df
 
 def remove_special_chars(text):
     return re.sub(r'[^\w\s]', '', text)
@@ -85,7 +156,12 @@ def process():
 
     # Aplicando a função para remover caracteres especiais
     dataset_vagas['descricao'] = dataset_vagas['descricao'].apply(remove_special_chars)
+    dataset_vagas = clean_salary_column(dataset_vagas)
+
     dataset_vagas.to_excel("Vagas-Catho.xlsx")
+
+    generate_report(dataset_vagas)
+    generate_insights(dataset_vagas)
 try:
     process()
 except Exception as err:
