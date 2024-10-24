@@ -153,12 +153,10 @@ def process():
 
                 dataset_vagas = pd.concat([dataset_vagas,nova_linha], ignore_index=True)
     driver.quit()
-
-    # Aplicando a função para remover caracteres especiais
-    dataset_vagas['descricao'] = dataset_vagas['descricao'].apply(remove_special_chars)
+    
     dataset_vagas = clean_salary_column(dataset_vagas)
 
-    dataset_vagas.to_excel("Vagas-Catho.xlsx")
+    dataset_vagas.to_excel("Vagas-Catho.xlsx", engine='xlsxwriter')
 
     generate_report(dataset_vagas)
     generate_insights(dataset_vagas)
