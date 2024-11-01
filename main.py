@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-genai.configure(api_key="")
+genai.configure(api_key="API_KEY")
 
 model = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -66,6 +66,7 @@ def generate_insights(df):
     print(insights)
     return insights
 
+
 def clean_salary_column(df):
     # Preenchendo valores NaN com string vazia para evitar erros
     df['salario'] = df['salario'].fillna('').astype(str)
@@ -81,6 +82,12 @@ def clean_salary_column(df):
 
 def remove_special_chars(text):
     return re.sub(r'[^\w\s]', '', text)
+
+def safe_find_element(driver, xpath):
+    try:
+        return driver.find_element(By.XPATH, xpath).text
+    except Exception:
+        return "não encontrado"
 
 def initial_config():
     webpages = []
@@ -136,11 +143,11 @@ def process():
                 driver.get(link)
 
                 # Raspagem de informaçõesss
-                nome_vaga = driver.find_element(By.XPATH, webpage["elementos_vaga"]["nome"]["xpath"]).text
-                empresa_vaga = driver.find_element(By.XPATH, webpage["elementos_vaga"]["empresa"]["xpath"]).text 
-                descricao_vaga = driver.find_element(By.XPATH, webpage["elementos_vaga"]["descricao"]["xpath"]).text
-                salario_vaga = driver.find_element(By.XPATH, webpage["elementos_vaga"]["salario"]["xpath"]).text
-                localizacao_vaga = driver.find_element(By.XPATH, webpage["elementos_vaga"]["localizacao"]["xpath"]).text
+                nome_vaga = safe_find_element(driver, webpage["elementos_vaga"]["nome"]["xpath"])
+                empresa_vaga = safe_find_element(driver, webpage["elementos_vaga"]["empresa"]["xpath"]) 
+                descricao_vaga = safe_find_element(driver, webpage["elementos_vaga"]["descricao"]["xpath"])
+                salario_vaga = safe_find_element(driver, webpage["elementos_vaga"]["salario"]["xpath"])
+                localizacao_vaga = safe_find_element(driver, webpage["elementos_vaga"]["localizacao"]["xpath"])
 
                 nova_linha = pd.DataFrame([{
                     "nome": nome_vaga,
